@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import Link from 'next/link'
 import './globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Aegis Onboarding - AI-Powered Client Automation',
@@ -31,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>
+      <body className="antialiased font-sans">
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
           {/* Background Pattern */}
           <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -58,6 +56,20 @@ export default function RootLayout({
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
+                    <nav className="hidden md:flex items-center space-x-6">
+                      <Link 
+                        href="/" 
+                        className="text-sm font-medium text-gray-700 hover:text-primary transition-colors"
+                      >
+                        Home
+                      </Link>
+                      <Link 
+                        href="/dashboard" 
+                        className="text-sm font-medium text-gray-700 hover:text-primary transition-colors"
+                      >
+                        Dashboard
+                      </Link>
+                    </nav>
                     <div className="hidden sm:flex items-center space-x-1 text-sm text-gray-500">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                       <span>AgentHack 2024</span>

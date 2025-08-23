@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 :root {
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
@@ -28,7 +26,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   @apply bg-gray-50;
 }
 
@@ -83,6 +81,19 @@ body {
   background-clip: text;
 }
 
+/* Glassmorphism styles */
+.card-glass {
+  @apply bg-white/40 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.card-glass-dark {
+  @apply bg-gray-900/40 backdrop-blur-md border border-gray-800/20 shadow-xl;
+}
+
+.glass-overlay {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20;
+}
+
 /* Loading animation */
 @keyframes spin-slow {
   from {
@@ -99,7 +110,11 @@ body {
 
 /* Card hover effects */
 .card-hover {
-  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:shadow-indigo-500/10;
+}
+
+.card-hover-glass {
+  @apply transition-all duration-300 hover:bg-white/60 hover:shadow-2xl hover:-translate-y-1 hover:shadow-indigo-500/20;
 }
 
 /* Form input focus styles */
@@ -127,6 +142,18 @@ body {
 
 .status-failed {
   @apply bg-red-100 text-red-800 border-red-200;
+}
+
+/* Enhanced backgrounds */
+.bg-mesh {
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+}
+
+.glass-button {
+  @apply bg-white/20 backdrop-blur-sm border border-white/30 text-white shadow-lg hover:bg-white/30 transition-all duration-300;
 }
 
 /* Notification animations */
