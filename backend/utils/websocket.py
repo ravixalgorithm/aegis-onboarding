@@ -58,10 +58,17 @@ class ConnectionManager:
     async def send_websocket_message(self, message: WebSocketMessageType, client_id: str):
         """Send a structured WebSocket message to a specific client"""
         try:
-            message_dict = message.dict() if hasattr(message, 'dict') else message
+            if hasattr(message, 'dict'):
+                message_dict = message.dict()
+            else:
+                message_dict = message
+            
+            logger.debug(f"Sending WebSocket message to {client_id}: {message_dict}")
             await self.send_personal_json(message_dict, client_id)
         except Exception as e:
             logger.error(f"Error sending WebSocket message to {client_id}: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
     
     async def broadcast_message(self, message: str):
         """Broadcast a message to all connected clients"""
@@ -110,47 +117,72 @@ manager = ConnectionManager()
 async def notify_step_update(client_id: str, step_id: str, status: str, progress: float, metadata: Optional[dict] = None):
     """Notify client of step update"""
     from models.responses import StepUpdateMessage
+    from datetime import datetime
+    
+    logger.info(f"Creating step update notification: client={client_id}, step={step_id}, status={status}, progress={progress}")
     
     message = StepUpdateMessage(
         client_id=client_id,
         step_id=step_id,
         step_status=status,
         progress_percentage=progress,
-        data=metadata or {}
+        data=metadata or {},
+        timestamp=datetime.utcnow()
     )
-    await manager.send_websocket_message(message, client_id)
+    
+    # Convert to dict and ensure timestamp is serialized properly
+    message_dict = message.dict()
+    message_dict['timestamp'] = message_dict['timestamp'].isoformat()
+    
+    logger.info(f"Sending step update message: {message_dict}")
+    await manager.send_personal_json(message_dict, client_id)
 
 async def notify_approval_required(client_id: str, step_id: str, approval_data: dict):
     """Notify client that approval is required"""
     from models.responses import ApprovalRequestMessage
+    from datetime import datetime
     
     message = ApprovalRequestMessage(
         client_id=client_id,
         step_id=step_id,
         approval_data=approval_data,
-        data={"approval_required": True}
+        data={"approval_required": True},
+        timestamp=datetime.utcnow()
     )
-    await manager.send_websocket_message(message, client_id)
+    
+    message_dict = message.dict()
+    message_dict['timestamp'] = message_dict['timestamp'].isoformat()
+    await manager.send_personal_json(message_dict, client_id)
 
 async def notify_onboarding_complete(client_id: str, completion_data: dict):
     """Notify client that onboarding is complete"""
     from models.responses import OnboardingCompleteMessage
+    from datetime import datetime
     
     message = OnboardingCompleteMessage(
         client_id=client_id,
         completion_data=completion_data,
-        data=completion_data
+        data=completion_data,
+        timestamp=datetime.utcnow()
     )
-    await manager.send_websocket_message(message, client_id)
+    
+    message_dict = message.dict()
+    message_dict['timestamp'] = message_dict['timestamp'].isoformat()
+    await manager.send_personal_json(message_dict, client_id)
 
 async def notify_error(client_id: str, error_message: str, error_code: Optional[str] = None, error_details: Optional[dict] = None):
     """Notify client of an error"""
     from models.responses import ErrorMessage
+    from datetime import datetime
     
     message = ErrorMessage(
         client_id=client_id,
         error_code=error_code,
         error_details=error_details or {},
-        data={"message": error_message}
+        data={"message": error_message},
+        timestamp=datetime.utcnow()
     )
-    await manager.send_websocket_message(message, client_id)
+    
+    message_dict = message.dict()
+    message_dict['timestamp'] = message_dict['timestamp'].isoformat()
+    await manager.send_personal_json(message_dict, client_id)
