@@ -164,7 +164,7 @@ export default function HomePage() {
     try {
       setError(null);
       const response = await onboardingApi.status(clientId);
-      setProgress(response.data.progress);
+      setProgress(response.data.progress || null);
       
       if (!isConnected) {
         connect(clientId);
